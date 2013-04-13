@@ -8,7 +8,7 @@ import javax.swing.event.*;
 import java.util.*;
 import javax.swing.text.*;
 import java.text.*;
-
+import java.net.*;
 
 public class myedit extends JFrame implements ActionListener
 {
