@@ -41,7 +41,9 @@ public class myedit extends JFrame implements ActionListener
 	JMenuItem TIMEDIT = new JMenuItem("Time/Date");
 	JCheckBoxMenuItem WORDEDIT = new JCheckBoxMenuItem("Word Wrap");
 	JMenuItem FONTEDIT = new JMenuItem("Set Font...");
-
+            
+            
+            
 	JMenuItem FINDSEARCH = new JMenuItem("Find");
 	JMenuItem FINDNEXTSEARCH = new JMenuItem("Find Next");
 
