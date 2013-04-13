@@ -10,9 +10,9 @@ import javax.swing.text.*;
 import java.text.*;
 
 
-public class Editor extends JFrame implements ActionListener
+public class myedit extends JFrame implements ActionListener
 {
-	public static Editor e;
+	public static myedit e;
 	
 	//DECLARATION OF ALL THE VARIABLES USED IN THIS APPLICATION
 	
@@ -39,9 +39,12 @@ public class Editor extends JFrame implements ActionListener
 	JMenuItem DELETEDIT = new JMenuItem("Delete");
 	JMenuItem SELECTEDIT = new JMenuItem("Select All");
 	JMenuItem TIMEDIT = new JMenuItem("Time/Date");
+	JCheckBoxMenuItem WORDEDIT = new JCheckBoxMenuItem("Word Wrap");
+	JMenuItem FONTEDIT = new JMenuItem("Set Font...");
 
 	JMenuItem FINDSEARCH = new JMenuItem("Find");
 	JMenuItem FINDNEXTSEARCH = new JMenuItem("Find Next");
+
 	JMenuItem ABOUTHELP = new JMenuItem("About");
 
 	JPopupMenu POPUP = new JPopupMenu();
@@ -49,7 +52,8 @@ public class Editor extends JFrame implements ActionListener
 	JMenuItem COPYPOPUP = new JMenuItem("Copy");
 	JMenuItem PASTEPOPUP = new JMenuItem("Paste");
 	JMenuItem DELETEPOPUP = new JMenuItem("Delete");
-	JMenuItem SELECTPOPUP = new JMenuItem("Select All");	
+	JMenuItem SELECTPOPUP = new JMenuItem("Select All");
+	
 
 	UndoManager undo = new UndoManager();
 	UndoAction undoAction = new UndoAction();
@@ -95,8 +99,8 @@ public class Editor extends JFrame implements ActionListener
 		}
 	}	
 	
-	//DEFAULT CONSTRUCTOR OF THE Editor CLASS		
-	public Editor()
+	//DEFAULT CONSTRUCTOR OF THE MYEDIT CLASS		
+	public myedit()
 	{
 		//SETING DEFAULT TITLE OF THE FRAME
 		setTitle("Untitled");	
@@ -105,7 +109,13 @@ public class Editor extends JFrame implements ActionListener
 		setSize(600,400);
 		
 		//MAKING THE FRAME VISIBLE
-		setVisible(true);						
+		setVisible(true);
+		
+		//SETTING WORD WRAP TO TRUE AS DEFAULT
+		text.setLineWrap(true);
+		
+		//SETTING THE DEFAULT STATE OF WORDWRAP MENU OPTION IN EDIT MENU
+		WORDEDIT.setState(true);
 		
 		//SETTING THE LAYOUT OF THE FRAME
 		getContentPane().setLayout(new BorderLayout());
@@ -139,7 +149,9 @@ public class Editor extends JFrame implements ActionListener
 		EDIT.addSeparator();
 		EDIT.add(SELECTEDIT);
 		EDIT.add(TIMEDIT);
-		
+		EDIT.addSeparator();
+		EDIT.add(WORDEDIT);
+		EDIT.add(FONTEDIT);
 		
 		//ADDING MENUITEMS TO THE SEARCH MENU
 		SEARCH.add(FINDSEARCH);
@@ -157,10 +169,11 @@ public class Editor extends JFrame implements ActionListener
 		POPUP.add(DELETEPOPUP);
 		POPUP.addSeparator();
 		POPUP.add(SELECTPOPUP);
-
+		
 		//SETTING SHORTCUT KEYS OF MENUS IN THE MAIN MENUBAR
 		FILE.setMnemonic(KeyEvent.VK_F);
 		EDIT.setMnemonic(KeyEvent.VK_E);
+		SEARCH.setMnemonic(KeyEvent.VK_S);
 		HELP.setMnemonic(KeyEvent.VK_H);
 	
 		//SETTING SHORTCUT KEYS OF MENUITEMS IN THE FILE MENU
@@ -177,7 +190,9 @@ public class Editor extends JFrame implements ActionListener
 		DELETEDIT.setMnemonic(KeyEvent.VK_L);
 		SELECTEDIT.setMnemonic(KeyEvent.VK_A);
 		TIMEDIT.setMnemonic(KeyEvent.VK_D);
-
+		WORDEDIT.setMnemonic(KeyEvent.VK_W);
+		FONTEDIT.setMnemonic(KeyEvent.VK_F);
+		
 		//SETTING SHORTCUT KEYS OF MENUITEMS IN THE SEARCH MENU
 		FINDSEARCH.setMnemonic(KeyEvent.VK_F);
 		FINDNEXTSEARCH.setMnemonic(KeyEvent.VK_N);
@@ -191,6 +206,7 @@ public class Editor extends JFrame implements ActionListener
 		PASTEPOPUP.setMnemonic(KeyEvent.VK_P);
 		DELETEPOPUP.setMnemonic(KeyEvent.VK_D);
 		SELECTPOPUP.setMnemonic(KeyEvent.VK_A);
+
 		//SETTING ACCELERATOR KEYS OF SOME MENUITEMS IN THE EDIT MENU
 		CUTEDIT.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,ActionEvent.CTRL_MASK));
 		COPYEDIT.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK));
@@ -211,11 +227,13 @@ public class Editor extends JFrame implements ActionListener
 		DELETEDIT.addActionListener(this);
 		SELECTEDIT.addActionListener(this);
 		TIMEDIT.addActionListener(this);
-
+		WORDEDIT.addActionListener(this);
+		FONTEDIT.addActionListener(this);
+		
 		//ADDING LISTENERS TO THE MENUITEMS IN SEARCH MENU
 		FINDSEARCH.addActionListener(this);
 		FINDNEXTSEARCH.addActionListener(this);
-
+		
 		//ADDING LISTENERS TO THE MENUITEM IN HELP MENU
 		ABOUTHELP.addActionListener(this);
 		
@@ -225,7 +243,7 @@ public class Editor extends JFrame implements ActionListener
 		PASTEPOPUP.addActionListener(this);
 		DELETEPOPUP.addActionListener(this);
 		SELECTPOPUP.addActionListener(this);
-
+		
 		//ADDING MOUSELISTENER TO RIGHT CLICK FOR THE POPUPLISTENER
 		text.addMouseListener(new MouseAdapter()
 		{
@@ -262,9 +280,9 @@ public class Editor extends JFrame implements ActionListener
 				
 			  	case 2: 
 			  	{
-				  	//Editor x = new Editor();
+				  	//myedit x = new myedit();
 				  	System.out.println("Inside 2");
-				  	e=new Editor();
+				  	e=new myedit();
 				  	e.setVisible(true);
 			  		break;} 			    
 		 	   } 
@@ -284,7 +302,7 @@ public class Editor extends JFrame implements ActionListener
 		});	
 	}
 
-	//HANDLING ALL EVENTS OF THE TEXT Editor
+	//HANDLING ALL EVENTS OF THE TEXT EDITOR
 	public void actionPerformed(ActionEvent e)
 	{
 	
@@ -342,6 +360,7 @@ public class Editor extends JFrame implements ActionListener
 		{
 			text.replaceSelection(null);
 		}
+		
 		//ACTION FOR SELECTALL MENU OPTION OF EDIT MENU AND POPUPMENU
 		if ((e.getSource()==SELECTEDIT)||(e.getSource()==SELECTPOPUP))
 		{
@@ -357,7 +376,22 @@ public class Editor extends JFrame implements ActionListener
 			dd=currDate.toString();
 			text.insert(dd,text.getCaretPosition());
 		}
-
+		
+		//ACTION FOR WORD WRAP MENU OPTION OF EDIT MENU
+		if (e.getSource()==WORDEDIT)
+		{
+			if(WORDEDIT.isSelected())
+			text.setLineWrap(true);
+			else
+			text.setLineWrap(false);
+		}
+		
+		//ACTION FOR SET FONT MENU OPTION OF EDIT MENU
+		if (e.getSource()==FONTEDIT)
+		{
+			fontDialogBox fontS = new fontDialogBox();
+		}
+			
 		//ACTION FOR FIND MENU OPTION OF SEARCH MENU
 		if (e.getSource()==FINDSEARCH)
 		{
@@ -382,7 +416,7 @@ JOptionPane.INFORMATION_MESSAGE);
 			text.setSelectionStart(ind);
 			text.setSelectionEnd(ind+findString.length());
 		}
-	
+		
 		//ACTION FOR ABOUT MENU OPTION OF HELP MENU
 		if (e.getSource()==ABOUTHELP)
 		{
@@ -525,7 +559,7 @@ JOptionPane.INFORMATION_MESSAGE);
 			}
 			else if( confirm == JOptionPane.CANCEL_OPTION )
 			{
-				e=new Editor();
+				e=new myedit();
 				String s= text.getText();
 				e.setVisible(true);
 				e.text.setText(s);
@@ -552,9 +586,146 @@ JOptionPane.INFORMATION_MESSAGE);
     		}	  
 	}  
 	
-	//MAIN FUNCTION OF Editor CLASS
+	//CLASS FOR BUILDING AND DISPLAYING FONT DIALOG BOX
+	class fontDialogBox extends JFrame implements ActionListener
+	{
+		//DECLARATION OF ALL VARIABLES USED IN fontDialogBox CLASS
+		
+		String availableFontString[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+		JList fontList = new JList(availableFontString);
+		JLabel fontLabel = new JLabel("Font");
+		JTextField valueFont=new JTextField("Arial");
+		JScrollPane fontPane = new JScrollPane(fontList);
+		
+		
+		String fontStyleString[] = {"Normal","Bold","Italic","Bold Italic"};
+		JList styleList = new JList(fontStyleString);
+		JLabel styleLabel = new JLabel("Style");
+		int v = ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
+		int h = ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+		JScrollPane stylePane = new JScrollPane(styleList,v,h);
+		JTextField valueStyle=new JTextField("Normal");
+	
+		String fontSizeString[] = {"8","10","12","14","16","18","20","22","24","28"};
+		JList sizeList = new JList(fontSizeString);
+		JLabel sizeLabel = new JLabel("Font size");
+		JScrollPane sizePane = new JScrollPane(sizeList);
+		JTextField valueSize=new JTextField("12");
+	
+		JButton okButton = new JButton("OK");
+		JButton cancelButton = new JButton("Cancel");
+	
+		JLabel sampleLabel = new JLabel("Sample:");
+		JTextField sample = new JTextField("   AaBbCc");
+	
+		Font selectedFont;
+		
+		//DEFAULT CONSTRUCTOR OF fontDialogBox CLASS
+		public fontDialogBox()
+		{
+			setSize(500,300);
+			setTitle("Font");
+			setVisible(true);
+			sample.setEditable(false);
+		
+			getContentPane().setLayout(null);
+		
+			fontLabel.setBounds(10,10,170,20);
+			valueFont.setBounds(10,35,170,20);
+			fontPane.setBounds(10,60,170,150);
+		
+			styleLabel.setBounds(200,10,100,20);
+			valueStyle.setBounds(200,35,100,20);
+			stylePane.setBounds(200,60,100,150);
+		
+			sizeLabel.setBounds(320,10,50,20);
+			valueSize.setBounds(320,35,50,20);
+			sizePane.setBounds(320,60,50,150);
+		
+			okButton.setBounds(400,35,80,20);
+			cancelButton.setBounds(400,60,80,20);
+		
+			sampleLabel.setBounds(150,235,50,30);
+			sample.setBounds(200,235,100,30);
+		
+			getContentPane().add(fontLabel);
+			getContentPane().add(fontPane);
+			getContentPane().add(valueFont);
+		
+			getContentPane().add(styleLabel);
+			getContentPane().add(stylePane);
+			getContentPane().add(valueStyle);
+		
+			getContentPane().add(sizeLabel);
+			getContentPane().add(sizePane);
+			getContentPane().add(valueSize);
+	
+			getContentPane().add(okButton);
+			getContentPane().add(cancelButton);
+			getContentPane().add(sampleLabel);
+			getContentPane().add(sample);
+		
+			okButton.addActionListener(this);
+			cancelButton.addActionListener(this);
+		
+			fontList.addListSelectionListener(new ListSelectionListener()
+			{
+				public void valueChanged(ListSelectionEvent event) 
+				{
+      					if (!event.getValueIsAdjusting()) 
+      					{
+	    				valueFont.setText(fontList.getSelectedValue().toString());
+	    				selectedFont = new Font(valueFont.getText(),styleList.getSelectedIndex(),Integer.parseInt(valueSize.getText()));
+	    				sample.setFont(selectedFont);
+    					}
+    				}
+    			});
+    	
+    			styleList.addListSelectionListener(new ListSelectionListener()
+			{
+				public void valueChanged(ListSelectionEvent event) 
+				{
+      				if (!event.getValueIsAdjusting()) 
+      					{
+	      				valueStyle.setText(styleList.getSelectedValue().toString());
+	      				selectedFont = new Font(valueFont.getText(),styleList.getSelectedIndex(),Integer.parseInt(valueSize.getText()));
+	    				sample.setFont(selectedFont);
+      					}
+      				}
+    			});
+    	
+    			sizeList.addListSelectionListener(new ListSelectionListener()
+			{
+				public void valueChanged(ListSelectionEvent event) 
+				{
+      					if (!event.getValueIsAdjusting()) 
+      					{
+      						valueSize.setText(sizeList.getSelectedValue().toString());
+      						selectedFont = new Font(valueFont.getText(),styleList.getSelectedIndex(),Integer.parseInt(valueSize.getText()));
+	    					sample.setFont(selectedFont);
+      					}
+ 				}   	
+      			});
+		}//END OF DEFAULT CONSTRUCTOR OF fontdialogBox CLASS 
+	
+		public void actionPerformed(ActionEvent ae)
+		{
+			if(ae.getSource()==okButton)
+			{
+				selectedFont = new Font(valueFont.getText(),styleList.getSelectedIndex(),Integer.parseInt(valueSize.getText()));
+	  		  	text.setFont(selectedFont);
+				setVisible(false);
+			}
+			if(ae.getSource()==cancelButton)		
+			{
+				setVisible(false);
+			}
+		}
+	}// END OF fontDialogBox CLASS	
+
+	//MAIN FUNCTION OF MYEDIT CLASS
 	public static void main(String args[])
 	{
-		e= new Editor();
+		e= new myedit();
 	}
-}//END OF Editor CLASS
+}//END OF MYEDIT CLASS
